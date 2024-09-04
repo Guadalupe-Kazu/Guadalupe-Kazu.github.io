@@ -1,0 +1,22 @@
+body{
+    background: url(img/kazuha.jpg) center;
+    font-family:'Courier New', Courier, monospacex;
+    color: beige;
+}
+
+.container {
+    position: relative;
+    width: 650px;
+    height: 555px;
+    background: rgba(225, 225, 225, .1);
+    backdrop-filter: blur(30px);
+    border: 2px solid rgba(225, 225, 225, .2);
+    border-radius: 16px;
+    padding: 20px;
+    color: #fff;
+}
+
+img {
+    width: auto;
+    height: 100px;  
+}
