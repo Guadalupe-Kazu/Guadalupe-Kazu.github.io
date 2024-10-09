@@ -1,0 +1,7 @@
+table { border-style:solid;
+    border-collapse: collapse;
+    }
+    td { border-style:solid;
+    padding: 5px;
+    background-color: beige}
+
