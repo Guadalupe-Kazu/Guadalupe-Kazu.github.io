@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Historia</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Boxicons CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #b133a0, #333285);
+            font-family:cursive;
+            color: #fff;
+            overflow: hidden;
+        }
+        #canvas-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .card-container {
+            max-width: 800px;
+            margin: auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+        .heart-icon {
+            font-size: 90px;
+            color: #f54c4c;
+            animation: heartbeat 1.5s infinite;
+        }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+        .btn-special {
+            margin-top: 20px;
+            padding: 10px 30px;
+            border: none;
+            background-color: #ff758c;
+            color: #fff;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .btn-special:hover {
+            background-color: #ff4d6d;
+            transform: scale(1.1);
+        }
+        #dynamic-message {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .flower-container {
+            text-align: center;
+            margin-top: 1px;
+        }
+        .flower {
+            width: 200px;
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .date {
+            font-family:'Times New Roman', Times, serif;
+            color: rgb(49, 4, 32);
+            font-size: 29px;
+        }
+        .dia {
+            font-size: 26px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Lienzo para fondo dinámico -->
+    <canvas id="canvas-background"></canvas>
+
+    <!-- Flor de Loto -->
+    <div class="flower-container">
+        <img src="../img/luna-sol-removebg-preview.png" alt="Flor de Loto" class="flower">
+    </div>
+
+    <!-- Tarjeta de dedicatoria -->
+    <div class="card-container">
+        <i class="bx bxs-heart heart-icon"></i>
+        <h1 class="display-6">Donde las estrellas nos encontrarón <i style="color: gold;" class='bx bxs-star' ></i></h1>
+        <h class="dia">Eres mi primer y ultimo pensamiento del día</h>
+        <p class="date" id="days-together">Llevamos juntos <span id="days-counter">0</span> días <i class='bx bx-calendar-heart'></i></i></p>
+        <p id="dynamic-message">Eres la razón de mi felicidad cada día. <i style="color: rgb(233, 156, 156);" class='bx bx-heart'></i></p>
+        <button class="btn-special" onclick="changeMessage()">Apezca aquí mvd, apezcalo las veces que quieras <i class='bx bx-message-dots' ></i></button>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // 1. Cálculo de días desde que empezaron a salir
+        const startDate = new Date(2024, 10, 6); // 6 de noviembre de 2024
+        function updateDaysCounter() {
+            const now = new Date();
+            const difference = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+            document.getElementById('days-counter').textContent = difference;
+        }
+        updateDaysCounter();
+
+        // 2. Rotación de mensajes dinámicos
+        const messages = [
+            'Llevamos juntos muchos días, pero no son suficientes para expresar cuánto te amo.',
+            'Cada vez que estoy contigo es como soñar despierta. ',
+            'Cuando estoy contigo, siento que el mundo está completo.',
+            'Te amo más de lo que las palabras pueden describir.',
+            'En el jardín de mi vida, tú eres la flor más hermosa.Mi lugar favorito siempre será a tu lado.',
+            'Tu amor es la melodía que llena mi alma de felicidad.',
+            'Si tuviera que elegir un momento eterno, sería cualquiera contigo.',
+            'A tu lado aprendí que el amor es el idioma más dulce del universo."',
+            'Desde el 6 de noviembre, mi vida nunca volvió a ser la misma, gracias a ti.',
+            'Si pudiera regalarte algo, sería una estrella, para que siempre recuerdes lo brillante que haces mi vida.',
+            'Ono se an acabado las frases ve nuestro chat ahí hay mas, habla conmigo y te dire lo mucho que te amo',
+
+        ];
+        let currentMessageIndex = 0;
+
+        function changeMessage() {
+            currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+            document.getElementById('dynamic-message').textContent = messages[currentMessageIndex];
+        }
+
+        // 3. Fondo dinámico con partículas
+        const canvas = document.getElementById('canvas-background');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particlesArray = [];
+        const numberOfParticles = 100;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 5 + 1;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 3 - 1.5;
+                this.color = `rgba(255,255,255,${Math.random()})`;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particlesArray.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
